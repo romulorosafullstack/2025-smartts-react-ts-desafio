@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Card as CardType } from '../../types/types';
-import './Card.css';
+import './index.css';
 
 //1) Criei a interface pra usar nos cartões
 interface CardProps {
@@ -15,12 +15,12 @@ const Card: React.FC<CardProps> = ({ card }) => {
   return (
     <div className={`card ${card.isFlipped ? 'flipped' : ''}`}>
     {/* Adiciono a class card a div e caso o card esteja virado tb adiciono a class flipped */}
-      <div className="card-inner">
-        <div className="card-front">
+      <div className="card__inner">
+        <div className="card__front">
           {/* Mostro o conteúdo da carta quando virada */}
           {card.content}
         </div>
-        <div className="card-back">
+        <div className="card__back">
           {/* Mostro o verso da carta quando virada para baixo */}
           ?
         </div>

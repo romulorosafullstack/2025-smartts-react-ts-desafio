@@ -1,0 +1,11 @@
+
+Exercícios:
+• Exibir um tabuleiro com cartas viradas para baixo.
+• Ao clicar, a carta é revelada.
+• Se duas cartas iguais forem abertas, permanecem viradas.
+• Se diferentes, voltam ao estado inicial.
+• Contador de jogadas e tempo.
+• Botão Reiniciar jogo.
+• Mensagem de vitória quando todas forem encontradas.
+• Criar uma classe JogoDaMemoria que controla o estado do jogo (cartas, pares encontrados, tentativas).
+• Separar a lógica do jogo da interface React e tipar todas as props, estados e funções.

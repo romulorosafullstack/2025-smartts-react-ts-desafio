@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../Card';
 import type { Card as CardType } from '../../types/types';
-import './Board.css';
+import './index.css';
 
-// 2) Crio uma função para embaralhar o array
+// 2) Crio uma função para embaralhar o array de strings (content)
 const shuffle = (array: string[]) => {
   let currentIndex = array.length, randomIndex;
   while (currentIndex !== 0) {

@@ -41,10 +41,7 @@
   border-radius: 0.8rem;
   border: 0.2rem solid #740202;
   background-color: #c90101;
-  color: #FFF
-}
-
-.board__reset{
+  color: #FFF;
   cursor: pointer;
   height: 4rem;
   width: 12rem;
@@ -77,19 +74,19 @@
   font-weight: 700;
 }
 
-.board__message__score{
+.board__score{
   display: flex;
   flex-direction: row;
-justify-content: space-around;
-width: 100%
+  justify-content: space-around;
+  width: 100%
 }
 
-.board__message__wrapper p {
+.board__score p {
   color: #FFF;
   font-weight: 700;
   font-size: 1.6rem;
 }
 
-.board__message span{
+.board__score span{
   font-weight: 400;
 }

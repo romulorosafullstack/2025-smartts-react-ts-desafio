@@ -1,8 +1,67 @@
-.board {
+.board__wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.board__status{
+  background-color: #FFF;
+  border-radius: 1rem;
+  height: 15rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  color: #000;
+  flex-direction: column;
+  gap: 1.8rem;
+  width: 24rem;
+}
+
+.board__timer,
+.board__moves,
+.board__reset{
+  font-weight: 700;
+}
+
+.board__timer,
+.board__moves{
+  font-size: 1.8rem;
+}
+
+.board__timer > span,
+.board__moves > span{
+  font-weight: 400;
+}
+
+.board__reset{
+  font-size: 1.6rem;
+  text-transform: uppercase;
+  border-radius: 0.8rem;
+  border: 0.2rem solid #740202;
+  background-color: #c90101;
+  color: #FFF
+}
+
+.board__timer{
+
+}
+
+.board__moves{
+}
+
+.board__reset{
+  cursor: pointer;
+  height: 4rem;
+  width: 12rem;
+}
+
+.board__cards {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
-  padding: 20px;
+  gap: 1.6rem;
+  padding: 2rem;
   justify-content: center;
   max-width: 720px;
   margin: auto;

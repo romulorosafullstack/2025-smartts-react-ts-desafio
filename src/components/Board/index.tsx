@@ -3,7 +3,7 @@ import type { Card as CardType } from '../../types/types';
 import Card from '../Card';
 import './index.css';
 
-// Função para embaralhar o array
+// Função para embaralhar
 const shuffle = (array: string[]) => {
   let currentIndex = array.length,
     randomIndex;
@@ -19,6 +19,7 @@ const shuffle = (array: string[]) => {
 };
 
 const Board: React.FC = () => {
+  // Novos estados
   const [cards, setCards] = useState<CardType[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedCards, setMatchedCards] = useState<number[]>([]);
@@ -26,11 +27,12 @@ const Board: React.FC = () => {
   const [time, setTime] = useState(0);
   const [gameActive, setGameActive] = useState(false);
   const [moves, setMoves] = useState(0);
+  const [gameWon, setGameWon] = useState(false);
 
-  // Inicializa o tabuleiro
+  // Inicializa cartas
   const initializeCards = () => {
-    const cardContents = ['😁', '😍', '😎', '😀', '🤩', '😜', '🤤', '🤑', '🤡', '🤖', '👽', '👿'];
-    const doubled = [...cardContents, ...cardContents];
+    const contents = ['😁', '😍', '😎', '😀', '🤩', '😜', '🤤', '🤑', '🤡', '🤖', '👽', '👿'];
+    const doubled = [...contents, ...contents];
     const shuffled = shuffle(doubled);
 
     const initialCards: CardType[] = shuffled.map((content, index) => ({
@@ -43,30 +45,31 @@ const Board: React.FC = () => {
     setCards(initialCards);
   };
 
-  // Montagem inicial
   useEffect(() => {
     initializeCards();
   }, []);
 
   // Timer
   useEffect(() => {
-    if (gameActive) {
+    if (gameActive && !gameWon) {
       const timer = setInterval(() => setTime((prev) => prev + 1), 1000);
       return () => clearInterval(timer);
     }
-  }, [gameActive]);
+  }, [gameActive, gameWon]);
 
-  // Lógica de comparação
+  // Comparação de cartas
   useEffect(() => {
     if (flippedCards.length === 2) {
       setCanFlip(false);
       const [firstId, secondId] = flippedCards;
-      const firstCard = cards.find((c) => c.id === firstId);
-      const secondCard = cards.find((c) => c.id === secondId);
+      const [firstCard, secondCard] = [
+        cards.find((c) => c.id === firstId),
+        cards.find((c) => c.id === secondId),
+      ];
 
       if (firstCard && secondCard) {
         if (firstCard.content === secondCard.content) {
-          // ✅ Match encontrado: mantém abertos
+          // ✅ Par encontrado
           setCards((prev) =>
             prev.map((card) =>
               card.id === firstId || card.id === secondId
@@ -76,8 +79,9 @@ const Board: React.FC = () => {
           );
           setMatchedCards((prev) => [...prev, firstId, secondId]);
           setFlippedCards([]);
-          setTimeout(() => setCanFlip(true), 500);
+          setTimeout(() => setCanFlip(true), 400);
         } else {
+          // ❌ Não combinam → vira de volta
           setTimeout(() => {
             setCards((prev) =>
               prev.map((card) =>
@@ -95,7 +99,17 @@ const Board: React.FC = () => {
     }
   }, [flippedCards, cards]);
 
+  // Verifica se o jogador venceu 🏆
+  useEffect(() => {
+    if (cards.length > 0 && cards.every((card) => card.isMatched)) {
+      setGameWon(true);
+      setGameActive(false);
+    }
+  }, [cards]);
+
+  // Clique na carta
   const handleClickCard = (id: number) => {
+    if (gameWon) return; // evita jogar depois de vencer
     if (!gameActive) setGameActive(true);
     if (!canFlip || flippedCards.includes(id) || matchedCards.includes(id)) return;
 
@@ -107,16 +121,19 @@ const Board: React.FC = () => {
     setFlippedCards((prev) => [...prev, id]);
   };
 
+  // Reiniciar jogo
   const resetGame = () => {
     setFlippedCards([]);
     setMatchedCards([]);
     setMoves(0);
     setTime(0);
     setGameActive(false);
+    setGameWon(false);
     setCanFlip(true);
     initializeCards();
   };
 
+  // Formata tempo mm:ss
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
       .toString()
@@ -138,6 +155,12 @@ const Board: React.FC = () => {
           Reiniciar
         </button>
       </div>
+
+      {gameWon && (
+        <div className="board__victory">
+          🎉 Você venceu em {moves} jogadas e {formatTime(time)}!
+        </div>
+      )}
 
       <div className="board__cards">
         {cards.map((card) => (

@@ -156,17 +156,17 @@ const Board: React.FC = () => {
         </button>
       </div>
 
-      {gameWon && (
-        <div className="board__message">
-          🎉 Você venceu em {moves} jogadas e {formatTime(time)}!
-        </div>
-      )}
-
       <div className="board__cards">
         {cards.map((card) => (
           <Card key={card.id} card={card} handleClick={handleClickCard} />
         ))}
       </div>
+
+      {gameWon && (
+        <div className="board__message">
+          🎉 Você venceu em {moves} jogadas e {formatTime(time)}!
+        </div>
+      )}
     </div>
   );
 };

@@ -163,8 +163,12 @@ const Board: React.FC = () => {
       </div>
 
       {gameWon && (
-        <div className="board__message">
-          🎉 Você venceu em {moves} jogadas e {formatTime(time)}!
+        <div className="board__message__wrapper">
+          <h3>🏆 Você venceu!</h3>
+          <div className="board__message__score">
+            <p>🎯Jogadas: <span>{moves}</span></p>
+            <p>🕒Tempo: <span>{formatTime(time)}</span></p>
+          </div>
         </div>
       )}
     </div>

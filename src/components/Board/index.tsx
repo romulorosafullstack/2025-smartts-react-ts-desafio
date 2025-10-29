@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import Card from '../Card';
+import React, { useEffect, useState } from 'react';
 import type { Card as CardType } from '../../types/types';
+import Card from '../Card';
 import './index.css';
 
 // 2) Crio uma função para embaralhar o array de strings (content)
@@ -27,6 +27,8 @@ const Board: React.FC = () => {
   const [matchedCards, setMatchedCards] = useState<number[]>([]);
   // State pra travar viradas
   const [canFlip, setCanFlip] = useState<boolean>(true);
+  // State para o timer
+  const [time, setTime] = useState(0);
 
   // 3) Crio o useEffect para inicializar as cartas
   useEffect(() => {
@@ -85,7 +87,7 @@ const Board: React.FC = () => {
     if (!canFlip || flippedCards.includes(id) || matchedCards.includes(id)) {
       return;
     }
-    
+
     // Viro a carta
     const updatedCards = cards.map(card =>
       card.id === id ? { ...card, isFlipped: true } : card

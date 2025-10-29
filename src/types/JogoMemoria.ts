@@ -1,5 +1,8 @@
 import type { Card as CardType } from '../types/types';
 
+type GameEvent = 'update' | 'victory';
+type Listener = () => void;
+
 export class JogoDaMemoria {
   private contents: string[] = ['😁', '😍', '😎', '😀', '🤩', '😜', '🤤', '🤑', '🤡', '🤖', '👽', '👿'];
   public cards: CardType[] = [];
@@ -10,14 +13,27 @@ export class JogoDaMemoria {
   public gameActive: boolean = false;
   public gameWon: boolean = false;
   private timer?: ReturnType<typeof setInterval>;
+  private listeners: Record<GameEvent, Listener[]> = {
+    update: [],
+    victory: [],
+  };
 
   constructor() {
     this.initializeCards();
   }
 
-  // Embaralha o array
+  // ✅ Sistema de eventos
+  public on(event: GameEvent, callback: Listener) {
+    this.listeners[event].push(callback);
+  }
+
+  private emit(event: GameEvent) {
+    this.listeners[event].forEach((cb) => cb());
+  }
+
   private shuffle(array: string[]): string[] {
-    let currentIndex = array.length, randomIndex;
+    let currentIndex = array.length,
+      randomIndex;
     while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
@@ -29,7 +45,6 @@ export class JogoDaMemoria {
     return array;
   }
 
-  // Inicializa as cartas do jogo
   public initializeCards(): void {
     const doubled = [...this.contents, ...this.contents];
     const shuffled = this.shuffle(doubled);
@@ -49,17 +64,19 @@ export class JogoDaMemoria {
     this.gameWon = false;
 
     if (this.timer) clearInterval(this.timer);
+    this.emit('update');
   }
 
-  // Inicia o cronômetro
   public startTimer(): void {
     if (!this.gameActive) {
       this.gameActive = true;
-      this.timer = setInterval(() => this.time++, 1000);
+      this.timer = setInterval(() => {
+        this.time++;
+        this.emit('update');
+      }, 1000);
     }
   }
 
-  // Para o cronômetro
   public stopTimer(): void {
     if (this.timer) {
       clearInterval(this.timer);
@@ -67,16 +84,15 @@ export class JogoDaMemoria {
     }
   }
 
-  // Verifica vitória
   private checkVictory(): void {
     if (this.cards.every((c) => c.isMatched)) {
       this.gameWon = true;
       this.gameActive = false;
       this.stopTimer();
+      this.emit('victory'); // 🎉 emite evento de vitória
     }
   }
 
-  // Lógica ao clicar em uma carta
   public flipCard(id: number): void {
     if (this.gameWon) return;
     if (!this.gameActive) this.startTimer();
@@ -100,17 +116,20 @@ export class JogoDaMemoria {
         this.matchedCards.push(firstId, secondId);
         this.flippedCards = [];
         this.checkVictory();
+        this.emit('update');
       } else {
         setTimeout(() => {
           first.isFlipped = false;
           second.isFlipped = false;
           this.flippedCards = [];
+          this.emit('update');
         }, 800);
       }
     }
+
+    this.emit('update');
   }
 
-  // Reinicia o jogo
   public reset(): void {
     this.initializeCards();
   }

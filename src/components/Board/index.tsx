@@ -29,6 +29,10 @@ const Board: React.FC = () => {
   const [canFlip, setCanFlip] = useState<boolean>(true);
   // State para o timer
   const [time, setTime] = useState(0);
+  // State para controlar o jogo
+  const [gameActive, setGameActive] = useState(false);
+
+
 
   // 3) Crio o useEffect para inicializar as cartas
   useEffect(() => {

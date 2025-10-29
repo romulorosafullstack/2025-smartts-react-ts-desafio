@@ -31,6 +31,17 @@ const Board: React.FC = () => {
   const [time, setTime] = useState(0);
   // State para controlar o jogo
   const [gameActive, setGameActive] = useState(false);
+  // State para controlar numero de movimentos
+  const [moves, setMoves] = useState(0);
+
+
+  // Crio o useEffect para iniciar o jogo
+  useEffect(() => {
+    if (gameActive) {
+      const timerInterval = setInterval(() => setTime(prevTime => prevTime + 1), 1000);
+      return () => clearInterval(timerInterval);
+    }
+  }, [gameActive]); // 7) O useEffect é chamado só quando o state gameActive é alterado
 
 
 
@@ -49,6 +60,7 @@ const Board: React.FC = () => {
       id: index,
       content,
       isFlipped: false,
+      isMatched: false
     }));
 
     // Atualizo o estado de cards
@@ -87,7 +99,10 @@ const Board: React.FC = () => {
 
   // Manipulo o clique na carta
   const handleClickCard = (id: number) => {
-    // Apenas viro se puder clicar, a carta não estiver virada ou já tiver sido combinada
+    // inicia o timer no primeiro clique
+    if (!gameActive) setGameActive(true);
+
+  // Apenas viro se puder clicar, a carta não estiver virada ou já tiver sido combinada
     if (!canFlip || flippedCards.includes(id) || matchedCards.includes(id)) {
       return;
     }
@@ -100,8 +115,33 @@ const Board: React.FC = () => {
     setFlippedCards(prev => [...prev, id]);
   };
 
+  // Reseta o jogo
+  const resetGame = () => {
+    setCards([]);
+    setFlippedCards([]);
+    setMatchedCards([]);
+    setCanFlip(true);
+    setGameActive(false);
+    setTime(0);
+    setMoves(0);
+  };
+
+  // Formatar tempo mm:ss
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
   return (
     <div className="board">
+      <div className="stats">
+        <span>🕒 Tempo: {formatTime(time)}</span>
+        <span>🎯 Jogadas: {moves}</span>
+        <button onClick={resetGame}>Reiniciar</button>
+      </div>
       {/* 5) Utilizo um map para renderizar as cartas do state cards} */}
       {cards.map(card => (
         <Card

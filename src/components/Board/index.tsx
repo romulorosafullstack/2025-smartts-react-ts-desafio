@@ -157,7 +157,7 @@ const Board: React.FC = () => {
       </div>
 
       {gameWon && (
-        <div className="board__victory">
+        <div className="board__message">
           🎉 Você venceu em {moves} jogadas e {formatTime(time)}!
         </div>
       )}
